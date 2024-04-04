@@ -8,22 +8,23 @@ const nameChain = () =>
     .notEmpty()
     .withMessage("name is not empty")
     .isString("it must be a string");
-const emailChain = () =>body("email").notEmpty().withMessage("email doest not empty").isEmail().withMessage("it must be a Email address").custom(async (val)=>{
-    const user=await User.findOne({
-        where:{
-            email:val
-        }
-    })
-    if(user){
-        throw new Error ("User already exists")
-    }
-    
-})
-  
-   
-    
-    
-    
+const emailChain = () =>
+  body("email")
+    .notEmpty()
+    .withMessage("email doest not empty")
+    .isEmail()
+    .withMessage("it must be a Email address")
+    .custom(async (val) => {
+      const user = await User.findOne({
+        where: {
+          email: val,
+        },
+      });
+      if (user) {
+        throw new Error("User already exists");
+      }
+    });
+
 const passwordChain = () =>
   body("password")
     .notEmpty()
@@ -31,10 +32,36 @@ const passwordChain = () =>
     .isLength({ min: 5 })
     .withMessage("Password atleast 5 characters")
     .custom(async (val) => {
-        
-      if (val.charCodeAt(0) >= 97 && val.charCodeAt(0) <= 122 || val.charCodeAt(0)>=47 && val.charCodeAt(0)<=55) {
+      if (
+        (val.charCodeAt(0) >= 97 && val.charCodeAt(0) <= 122) ||
+        (val.charCodeAt(0) >= 47 && val.charCodeAt(0) <= 55)
+      ) {
         throw new Error("First character must be a UpperCase character");
       }
     });
+const loginEmailChain = () =>
+  body("email")
+    .notEmpty()
+    .withMessage("Email not be empty")
+    .isEmail()
+    .withMessage("It must be a valid email address")
+    .custom(async (val, { req }) => {
+      let user = await User.findOne({
+        where: {
+          email: val,
+        },
+      });
 
-module.exports = { nameChain, emailChain, passwordChain, formatOfError };
+      if (!user) {
+        throw new Error("User not found");
+      }
+      req.user = user;
+    });
+
+module.exports = {
+  nameChain,
+  emailChain,
+  passwordChain,
+  formatOfError,
+  loginEmailChain,
+};

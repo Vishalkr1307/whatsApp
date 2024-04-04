@@ -55,4 +55,19 @@
         })
 
     })
+    const formData=document.querySelector("form")
+    formData.addEventListener("submit", handleLogin)
+    function handleLogin(event){
+        event.preventDefault()
+        const data={
+            email:formData.elements[0].value,
+            password:formData.elements[1].value
+        }
+        axios.post("/auth/login",data).then((res)=>{
+            console.log(res.data)
+        }).catch((err)=>{
+            console.log(err.response.data)
+        })
+
+    }
 </script>

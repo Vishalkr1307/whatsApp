@@ -2,6 +2,7 @@ const User=require("..//module/user")
 const {formatOfError}=require("..//util/valdation")
 const {validationResult}=require("express-validator")
 const bcrypt=require("bcrypt")
+const {newToken}=require("..//util/token")
 
 const Register=async (req,res)=>{
     try{
@@ -23,7 +24,7 @@ const Login=async (req,res)=>{
     try{
         const error=validationResult(req)
         if(!error.isEmpty()){
-            return res.status(401).send(formatOfError(error.array()).join(","))
+            return res.status(404).send(formatOfError(error.array()).join(","))
         }
         const user=req.user
         
@@ -32,7 +33,8 @@ const Login=async (req,res)=>{
             return res.status(401).send("Password is incorrect")
 
         }
-        return res.status(200).send(user)
+        const token=newToken(user)
+        return res.status(200).send(token)
 
 
 

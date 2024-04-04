@@ -57,6 +57,7 @@
     })
     const formData=document.querySelector("form")
     formData.addEventListener("submit", handleLogin)
+    const p=document.createElement("p")
     function handleLogin(event){
         event.preventDefault()
         const data={
@@ -64,10 +65,16 @@
             password:formData.elements[1].value
         }
         axios.post("/auth/login",data).then((res)=>{
-            console.log(res.data)
+            if(res.data){
+                p.textContent="login successfully"
+                p.className="alert alert-success"
+                window.location.href="/"
+            }
         }).catch((err)=>{
-            console.log(err.response.data)
+            p.textContent=err.response.data
+            p.className="alert  alert-danger "
         })
+        formData.insertBefore(p,formData.children[0])
 
     }
 </script>

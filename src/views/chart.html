@@ -1,32 +1,103 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  </head>
-  <body>
+    <title>Whats App demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
     <header></header>
     <main class=" border-3 d-flex flex-column justify-content-between">
-        <div style="min-height: 80vh; background-color: aqua;" class=" text-center overflow-y-scroll  ">
-            <h1>Chart-App<s/h1>
-            
+        <div style="min-height: 80vh; background-color: aqua;" class="  overflow-y-scroll  " id="messageBox">
+            <h1 class="text-center">Chart-App<s /h1>
+
         </div>
         <div style="top: 90vh;" class="position-fixed  w-100  d-flex justify-content-center  bg-light-dark  ">
-            <input type="text" name="" id="" class="w-50 rounded-2  ">
+            <input type="text" name="" id="message" class="w-50 rounded-2  ">
             <button class="btn btn-success mx-2  ">Send</button>
         </div>
 
     </main>
-    
+
 </body>
+
 </html>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script>
-    document.addEventListener("DOMContentLoaded",function(){
-        fetch("navbar.html").then((res)=>res.text()).then((data)=>{
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"
+    integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="module">
+    import { navBar } from "./navbar.js";
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("navbar.html").then((res) => res.text()).then((data) => {
             document.querySelector("header").innerHTML = data
+            navBar()
         });
     })
+    const btn = document.querySelector("button")
+    const token = localStorage.getItem("token")
+
+    btn.addEventListener("click", postMessage)
+    function postMessage(event) {
+        let data = {
+            message: document.getElementById("message").value
+        }
+        axios.post("/message/addMessage", data, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }).then((res) => {
+            getMessage()
+            document.getElementById("message").value=""
+        }).catch((err) => {
+            console.log(err.response.data)
+        })
+
+    }
+    getMessage()
+    function getMessage() {
+        axios.get("/message/getMessage", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }).then((res) => {
+
+            getData(res.data)
+        }).catch((err) => {
+            console.log(err.response)
+        })
+    }
+    const messageBox = document.getElementById("messageBox")
+    function getData(data) {
+
+        messageBox.innerText=""
+        data.forEach((item) => {
+            var div=document.createElement("div")
+            var username=document.createElement("h3")
+            var message=document.createElement("p")
+            username.textContent=item?.User?.name==null?"unknown":item.User.name
+            message.textContent=item.message
+            div.className="d-flex flex-column w-25 h-25 px-5 bg-white mt-2 "
+            
+            div.append(username,message)
+            messageBox.append(div)
+            
+
+
+
+
+
+
+
+
+        })
+
+    }
 </script>

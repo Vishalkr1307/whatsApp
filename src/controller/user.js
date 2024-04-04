@@ -2,7 +2,7 @@ const User=require("..//module/user")
 const {formatOfError}=require("..//util/valdation")
 const {validationResult}=require("express-validator")
 const bcrypt=require("bcrypt")
-const {newToken}=require("..//util/token")
+const {newToken,verifyaToken}=require("..//util/token")
 
 const Register=async (req,res)=>{
     try{
@@ -40,8 +40,33 @@ const Login=async (req,res)=>{
 
     }
     catch(err){
+        return res.status(500).send("bad request")
 
     }
 }
+const allUser=async (req,res)=>{
+    try{
+        const user=await User.findAll()
+        return res.status(200).send(user)
 
-module.exports={Register,Login}
+    }
+    catch(err){
+        return res.status(500).send("bad request");
+    }
+}
+const Profile=async (req, res) => {
+    try{
+        const user=await verifyaToken(req.body.token)
+        if(new Date(user.exp).getTime()<new Date(Date.now()).getTime()){
+            return res.status(401).send("Your Token has expired")
+
+        }
+
+        return res.status(200).send(user.user)
+
+    }
+    catch(err){
+        return res.status(500).send("Bad request");
+    }
+}
+module.exports={Register,Login,allUser,Profile}

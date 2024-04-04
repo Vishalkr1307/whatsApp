@@ -68,6 +68,8 @@
             if(res.data){
                 p.textContent="login successfully"
                 p.className="alert alert-success"
+                localStorage.setItem("token",res.data)
+                
                 window.location.href="chart.html"
             }
         }).catch((err)=>{

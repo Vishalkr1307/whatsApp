@@ -61,7 +61,10 @@
         })
 
     }
-    getMessage()
+    setInterval(()=>{
+        getMessage()
+
+    },2000)
     function getMessage() {
         axios.get("/message/getMessage", {
             headers: {

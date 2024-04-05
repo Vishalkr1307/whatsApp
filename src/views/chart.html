@@ -1,120 +1,251 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Whats App demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+  </head>
 
-<body>
+  <body>
     <header></header>
-    <main class=" border-3 d-flex flex-column justify-content-between">
-        <div style="min-height: 80vh; background-color: aqua;" class="  overflow-y-scroll  " id="messageBox">
-            <h1 class="text-center">Chart-App<s /h1>
+    <main
+      style="top: 50px"
+      class="border-3 d-flex flex-column justify-content-between position-relative"
+    >
+      <div>
+        <h1 class="text-center text-secondary">chart App</h1>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          data-bs-whatever="@getbootstrap"
+        >
+          create Group
+        </button>
 
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                 Create Group
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <form >
+                  <div class="mb-3">
+                    <label for="group" class="col-form-label"
+                      >Give a Group Name:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="group"
+                    />
+                  </div>
+                  <div class="btn-group d-flex flex-column " role="group" id="userGroup" aria-label="Basic checkbox toggle button group">
+                  </div>
+                  
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" id="btnGroup" class="btn btn-primary">
+                  Create Group
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div style="top: 90vh;" class="position-fixed  w-100  d-flex justify-content-center  bg-light-dark  ">
-            <input type="text" name="" id="message" class="w-50 rounded-2  ">
-            <button class="btn btn-success mx-2  ">Send</button>
-        </div>
-
+      </div>
+      <div
+        style="min-height: 70vh; background-color: aqua"
+        class="overflow-y-scroll"
+        id="messageBox"
+      ></div>
+      <div
+        style="top: 90vh"
+        class="position-fixed w-100 d-flex justify-content-center bg-light-dark"
+      >
+        <input type="text" name="" id="message" class="w-50 rounded-2" />
+        <button class="btn btn-success mx-2" id="postBtn">Send</button>
+      </div>
     </main>
-
-</body>
-
+  </body>
 </html>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"
-    integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"
+  integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
 
 <script type="module">
-    import { navBar } from "./navbar.js";
-    document.addEventListener("DOMContentLoaded", function () {
-        fetch("navbar.html").then((res) => res.text()).then((data) => {
-            document.querySelector("header").innerHTML = data
-            navBar()
-        });
-        getMessage()
+  import { navBar } from "./navbar.js";
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("navbar.html")
+      .then((res) => res.text())
+      .then((data) => {
+        document.querySelector("header").innerHTML = data;
+        navBar();
+        getAllUser();
+      });
+    
+  });
+  const btn = document.getElementById("postBtn");
+  const token = localStorage.getItem("token");
+  
+
+  btn.addEventListener("click", postMessage);
+  function postMessage(event) {
+    let data = {
+      message: document.getElementById("message").value,
+    };
+    axios
+      .post("/message/addMessage", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        getMessage();
+        document.getElementById("message").value = "";
+      })
+      .catch((err) => {
+        alert(err.response.data);
+      });
+  }
+  
+  getMessage()
+  function getMessage() {
+    axios
+      .get("/message/getMessage", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        
+        let len = res.data.length<5?res.data.length:res.data.length-5 
+        let newData = res.data.splice(len);
+        localStorage.setItem("message", JSON.stringify(newData));
+      })
+      .catch((err) => {
+        alert(err.response.data);
+      });
+  }
+  setInterval(() => {
+    var localData = JSON.parse(localStorage.getItem("message"));
+    
+    getData(localData);
+  }, 1000);
+  const messageBox = document.getElementById("messageBox");
+
+  function getData(data) {
+    messageBox.innerText = "";
+    data.forEach((item) => {
+      var div = document.createElement("div");
+      var username = document.createElement("h5");
+      var message = document.createElement("p");
+      username.textContent =
+        item?.User?.name == null ? "unknown" : item.User.name;
+      message.textContent = item?.message == "" ? "empty" : item.message;
+      div.className = "d-flex flex-column  px-1 bg-white mt-1 rounded-3  ";
+      div.style.height = "70px";
+      div.style.width = "300px";
+
+      div.append(username, message);
+      messageBox.append(div);
+    });
+  }
+ 
+  function getAllUser() {
+    axios
+      .get("/auth/allUser", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        geUserDetails(res.data)
+        
+      })
+      .catch((err) => {
+        alert(err.response.data)
+      });
+  }
+  const userGroup=document.getElementById("userGroup")
+  function geUserDetails(data){
+    if(data.length>0){
+
+    
+    data.forEach((item)=>{
+        var div=document.createElement("div");
+        var label=document.createElement("label")
+        label.className="btn btn-outline-primary"
+        label.setAttribute("for", item.id)
+        label.textContent = item.name
+        var checkbox=document.createElement("input")
+        checkbox.setAttribute("type", "checkbox")
+        checkbox.setAttribute("id",item.id)
+        checkbox.className="btn-check"
+        checkbox.value=item.id
+        div.className="mt-1 "
+        div.append(checkbox,label)
+        userGroup.append(div)
     })
-    const btn = document.querySelector("button")
-    const token = localStorage.getItem("token")
-    
-    
+  }
 
-    btn.addEventListener("click", postMessage)
-    function postMessage(event) {
-        let data = {
-            message: document.getElementById("message").value
+  }
+
+const btnGroup = document.getElementById("btnGroup");
+btnGroup.addEventListener("click", handleGroup);
+
+function handleGroup(event) {
+    let checkboxData=[]
+    let checkbox=document.querySelectorAll("input[type=checkbox]")
+    checkbox.forEach((item)=>{
+        if(item.checked){
+            checkboxData.push(item.id)
         }
-        axios.post("/message/addMessage", data, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }).then((res) => {
-            getMessage()
-            document.getElementById("message").value=""
-        }).catch((err) => {
-            console.log(err.response.data)
-        })
-
+    })
+    let data={
+        groupName:document.getElementById("group").value,
+        user:checkboxData
     }
+    console.log(data)
     
-    
-    function getMessage() {
-        axios.get("/message/getMessage", {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }).then((res) => {
-            let len=res.data.length-5
-            let newData=res.data.splice(len)
-            localStorage.setItem("message",JSON.stringify(newData))
-            
-
-            
-            
-        }).catch((err) => {
-            console.log(err.response)
-        })
-    }
-    setInterval(()=>{
-        var localData=JSON.parse(localStorage.getItem("message"));
-        getData(localData)
-        
-        
-
-    },1000)
-    const messageBox = document.getElementById("messageBox")
-    
-    function getData(data) {
-
-        messageBox.innerText=""
-        data.forEach((item) => {
-            var div=document.createElement("div")
-            var username=document.createElement("h3")
-            var message=document.createElement("p")
-            username.textContent=item?.User?.name==null?"unknown":item.User.name
-            message.textContent=item.message
-            div.className="d-flex flex-column w-25 h-25 px-5 bg-white mt-2 "
-            
-            div.append(username,message)
-            messageBox.append(div)
-            
-
-
-
-
-
-
-
-
-        })
-
-    }
+}
+  
+  
 </script>

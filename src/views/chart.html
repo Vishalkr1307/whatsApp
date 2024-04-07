@@ -47,9 +47,15 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 ></script>
-
-<script type="module">
+<script type="module"">
   import { navBar } from "./navbar.js";
+  import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
+  const socket=io("http://localhost:2345")
+  
+ 
+  
+  
+  
   document.addEventListener("DOMContentLoaded", function () {
     fetch("navbar.html")
       .then((res) => res.text())
@@ -62,6 +68,13 @@
   });
   const btn = document.getElementById("postBtn");
   const token = localStorage.getItem("token");
+  const messageBox = document.getElementById("messageBox");
+  socket.on("connect",()=>{
+    const user=JSON.parse(localStorage.getItem("User"))
+
+    messageBox.append(`${user.name} Join the chart`)
+  })
+
   
 
   btn.addEventListener("click", postMessage);
@@ -77,6 +90,7 @@
       })
       .then((res) => {
         getMessage();
+        
         document.getElementById("message").value = "";
       })
       .catch((err) => {
@@ -97,17 +111,28 @@
         let len = res.data.length<5?0:res.data.length-5 
         let newData = res.data.splice(len);
         localStorage.setItem("message", JSON.stringify(newData));
+        isSocket()
       })
       .catch((err) => {
         alert(err.response.data);
       });
   }
-  setInterval(() => {
+  // setInterval(() => {
+  //   var localData = JSON.parse(localStorage.getItem("message"));
+  
+  //   getData(localData);
+  // }, 1000);
+  isSocket()
+  function isSocket(){
+
     var localData = JSON.parse(localStorage.getItem("message"));
     
-    getData(localData);
-  }, 1000);
-  const messageBox = document.getElementById("messageBox");
+    socket.emit("send-message",localData)
+    socket.on("received-message",(localData)=>{
+      
+      getData(localData)
+    })
+  }
 
   function getData(data) {
     messageBox.innerText = "";
@@ -128,27 +153,7 @@
   }
  
   
-//   const userGroup=document.getElementById("userGroup")
-//   
 
-// const btnGroup = document.getElementById("btnGroup");
-// btnGroup.addEventListener("click", handleGroup);
-
-// function handleGroup(event) {
-//     let checkboxData=[]
-//     let checkbox=document.querySelectorAll("input[type=checkbox]")
-//     checkbox.forEach((item)=>{
-//         if(item.checked){
-//             checkboxData.push(item.id)
-//         }
-//     })
-//     let data={
-//         groupName:document.getElementById("group").value,
-//         user:checkboxData
-//     }
-//     console.log(data)
-    
-// }
   
   
 </script>

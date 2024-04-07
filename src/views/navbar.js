@@ -1,5 +1,6 @@
 
 
+
 export function navBar(){
  const token=localStorage.getItem("token");
  const name=document.getElementById("name");
@@ -17,6 +18,7 @@ export function navBar(){
     axios.post("/auth/profile",{
         token:token,
     }).then((res)=>{
+        localStorage.setItem("User",JSON.stringify(res.data))
         name.textContent=res.data.name;
         email.textContent=res.data.email
         btn1.style.display="none"

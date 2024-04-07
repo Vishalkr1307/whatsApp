@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <header class="mb-5"></header>
+    <main class="mt-5 mx-4 ">
+      <div class="w-50 px-4">
+        <form action="" id="groupForm">
+          <label for="group" class="form-label">Create Group</label>
+          <input type="text" name="" class="form-control w-50" id="group" />
+          <button type="submit" class="btn btn-primary mt-1">
+            create Group
+          </button>
+        </form>
+      </div>
+      <h2 class="text-success ">Group-list</h2>
+      <div id="groupData" class="d-flex flex-column mt-4 ">
+      </div>
+    </main>
+  </body>
+</html>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"
+  integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+
+<script type="module">
+  import { navBar } from "./navbar.js";
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch("navbar.html")
+      .then((res) => res.text())
+      .then((data) => {
+        document.querySelector("header").innerHTML = data;
+        navBar();
+      });
+      getGroup();
+  });
+  const groupForm = document.getElementById("groupForm");
+  const token = localStorage.getItem("token");
+  groupForm.addEventListener("submit", handleGroup);
+
+  function handleGroup(event) {
+    event.preventDefault();
+    let data = {
+      groupName: document.getElementById("group").value,
+    };
+    axios
+      .post("/group/addGroup", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.data) {
+          alert("group created successfully");
+          getGroup();
+        }
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
+  }
+  
+  const groupData = document.getElementById("groupData");
+  function getGroup() {
+    axios
+      .get("/group/getGroup", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        getGroupName(res.data);
+      })
+      .catch((err) => console.log(err.response.data));
+  }
+
+  function getGroupName(data) {
+    groupData.innerHTML = "";
+    if (data.length > 0) {
+      data.forEach((item) => {
+        const div=document.createElement("div");
+        let btn = document.createElement("button");
+        btn.className = "btn btn-success w-25 mb-3 rounded-2 px-2 ";
+        btn.textContent = item.groupName;
+        div.className="d-flex "
+        div.append(btn);
+        btn.addEventListener("click",()=>{
+            window.location.href=`groupMessage.html?groupId=${item.id}`
+        });
+        groupData.append(div)
+      });
+    }
+  }
+</script>

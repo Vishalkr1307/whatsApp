@@ -29,7 +29,20 @@ const GroupUser = db.define("GroupUser", {
     }
 });
 
+const GroupMessage=db.define("GroupMessage", {
+    id:{
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    message:{
+        type:DataTypes.STRING,
+        allowNull: false,
+    }
+    
+})
 
 
 
-module.exports = { Group, GroupUser };
+
+module.exports = { Group, GroupUser,GroupMessage };

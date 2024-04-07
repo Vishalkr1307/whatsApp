@@ -20,69 +20,7 @@
     >
       <div>
         <h1 class="text-center text-secondary">chart App</h1>
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-          data-bs-whatever="@getbootstrap"
-        >
-          create Group
-        </button>
-
-        <div
-          class="modal fade"
-          id="exampleModal"
-          tabindex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                 Create Group
-                </h1>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <form >
-                  <div class="mb-3">
-                    <label for="group" class="col-form-label"
-                      >Give a Group Name:</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="group"
-                    />
-                  </div>
-                  <div class="btn-group d-flex flex-column " role="group" id="userGroup" aria-label="Basic checkbox toggle button group">
-                  </div>
-                  
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="button" id="btnGroup" class="btn btn-primary">
-                  Create Group
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        
       <div
         style="min-height: 70vh; background-color: aqua"
         class="overflow-y-scroll"
@@ -118,7 +56,7 @@
       .then((data) => {
         document.querySelector("header").innerHTML = data;
         navBar();
-        getAllUser();
+        // getAllUser();
       });
     
   });
@@ -156,7 +94,7 @@
       })
       .then((res) => {
         
-        let len = res.data.length<5?res.data.length:res.data.length-5 
+        let len = res.data.length<5?0:res.data.length-5 
         let newData = res.data.splice(len);
         localStorage.setItem("message", JSON.stringify(newData));
       })
@@ -189,63 +127,28 @@
     });
   }
  
-  function getAllUser() {
-    axios
-      .get("/auth/allUser", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        geUserDetails(res.data)
-        
-      })
-      .catch((err) => {
-        alert(err.response.data)
-      });
-  }
-  const userGroup=document.getElementById("userGroup")
-  function geUserDetails(data){
-    if(data.length>0){
+  
+//   const userGroup=document.getElementById("userGroup")
+//   
 
+// const btnGroup = document.getElementById("btnGroup");
+// btnGroup.addEventListener("click", handleGroup);
+
+// function handleGroup(event) {
+//     let checkboxData=[]
+//     let checkbox=document.querySelectorAll("input[type=checkbox]")
+//     checkbox.forEach((item)=>{
+//         if(item.checked){
+//             checkboxData.push(item.id)
+//         }
+//     })
+//     let data={
+//         groupName:document.getElementById("group").value,
+//         user:checkboxData
+//     }
+//     console.log(data)
     
-    data.forEach((item)=>{
-        var div=document.createElement("div");
-        var label=document.createElement("label")
-        label.className="btn btn-outline-primary"
-        label.setAttribute("for", item.id)
-        label.textContent = item.name
-        var checkbox=document.createElement("input")
-        checkbox.setAttribute("type", "checkbox")
-        checkbox.setAttribute("id",item.id)
-        checkbox.className="btn-check"
-        checkbox.value=item.id
-        div.className="mt-1 "
-        div.append(checkbox,label)
-        userGroup.append(div)
-    })
-  }
-
-  }
-
-const btnGroup = document.getElementById("btnGroup");
-btnGroup.addEventListener("click", handleGroup);
-
-function handleGroup(event) {
-    let checkboxData=[]
-    let checkbox=document.querySelectorAll("input[type=checkbox]")
-    checkbox.forEach((item)=>{
-        if(item.checked){
-            checkboxData.push(item.id)
-        }
-    })
-    let data={
-        groupName:document.getElementById("group").value,
-        user:checkboxData
-    }
-    console.log(data)
-    
-}
+// }
   
   
 </script>

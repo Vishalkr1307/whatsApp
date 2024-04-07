@@ -5,6 +5,7 @@ const cors=require("cors")
 
 const User=require("./route/user")
 const Message=require("./route/message")
+const Group=require("./route/group")
 app.use(express.json())
 const allowedOrigins = ['htpp://localhost:2345'];
 const corsOptions = {
@@ -23,6 +24,7 @@ app.use(cors())
 app.use(express.static(path.join(__dirname,'views')))
 app.use("/auth",User)
 app.use("/message",Message)
+app.use("/group",Group)
 
 
 

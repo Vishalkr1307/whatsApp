@@ -61,16 +61,35 @@ const getGroup = async (req, res) => {
       where: {
         AdminId: user.id,
       },
-      include: {
+      include: [{
         model: User,
         attributes: ["name"],
-      },
+      }],
     });
+    
+    const allGroup=await GroupUser.findAll({
+      where:{
+        UserId: user.id,
+      },
+      include:[{
+        model:Group,
+        attributes:["groupName"]
+      },{
+        model:User,
+        attributes:['name']
+      }]
+    })
+    let groupList=[...group,...allGroup] 
+    
+    
+    
+    
     if (group.length == 0) {
       return res.status(404).send("Group not found");
     }
-    return res.status(200).send(group);
+    return res.status(200).send(groupList);
   } catch (err) {
+    console.log(err);
     return res.status(500).send("Bad Request");
   }
 };
@@ -105,19 +124,18 @@ const getGroupMessage = async (req, res) => {
     const mesage = await GroupMessage.findAll({
       where: {
         GroupId: groupId,
-      }
-    });
-    let groupMessage=[]
-    await Promise.all(mesage.map(async(item)=>{
-       const user=await User.findByPk(item.UserId,{
-          attributes:['name']
-       });
-       
-       groupMessage.push(user)
-    }))
+      },
+      include:[{
+        model:User,
+        attributes:["name"]
+      }]
 
-    return res.status(200).send(groupMessage);
+    });
+    
+
+    return res.status(200).send(mesage);
   } catch (err) {
+    
     
     return res.status(500).send("Bad Request");
   }

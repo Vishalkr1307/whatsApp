@@ -32,11 +32,11 @@
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog ">
+          <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">
-                  select the user
+                  Select the user
                 </h1>
                 <button
                   type="button"
@@ -45,9 +45,10 @@
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body mw-100 d-flex flex-wrap   " id="modal-body">
-                
-              </div>
+              <div
+                class="modal-body mw-100 d-flex flex-wrap"
+                id="modal-body"
+              ></div>
               <div class="modal-footer">
                 <button
                   type="button"
@@ -64,20 +65,23 @@
           </div>
         </div>
       </div>
-      <div class="mt-4 ">
-          <h2 class="text-bg-secondary ">List of The Group Member</h2>
-          <div id="listOfMember">
-             
-          </div>
+      <div class="mt-4">
+        <h2 class="text-bg-secondary">List of The Group Member</h2>
+        <div id="listOfMember"></div>
       </div>
-      <div class="w-100 mt-2  ">
-         <div style="min-height: 400px; width: 100vw;" class=" overflow-y-scroll bg-body-tertiary rounded-2 border-5  border-secondary      ">
-             <h1>hello box</h1>
-         </div>
-         <div style="top: 650px;" class="w-100 d-flex justify-content-center position-fixed    ">
-            <input type="text" name="" id="message" class="w-50 form-control  ">
-            <button class="btn btn-success mx-1 " id="messageBtn">Send</button>
-         </div>
+      <div class="w-100 mt-2">
+        <div
+          style="min-height: 400px; width: 100vw"
+          id="messageBox"
+          class="overflow-y-scroll bg-body-tertiary rounded-2 border-5 border-secondary"
+        ></div>
+        <div
+          style="top: 650px"
+          class="w-100 d-flex justify-content-center position-fixed"
+        >
+          <input type="text" name="" id="message" class="w-50 form-control" />
+          <button class="btn btn-success mx-1" id="messageBtn">Send</button>
+        </div>
       </div>
     </main>
   </body>
@@ -95,12 +99,20 @@
 ></script>
 
 <script type="module">
-  import { navBar } from "./navbar.js";
   const token = localStorage.getItem("token");
-  const urlParams=new URLSearchParams(window.location.search)
-  
-  const groupId=urlParams.get("groupId")
-  
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId = +urlParams.get("groupId");
+  const messageBox = document.getElementById("messageBox");
+  const modalBody = document.getElementById("modal-body");
+  const btnGroup = document.getElementById("btnGroup");
+  const listOfMember = document.getElementById("listOfMember");
+  const messageBtn = document.getElementById("messageBtn");
+  import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
+
+  const socket = io("http://localhost:2345");
+
+  import { navBar } from "./navbar.js";
+
   document.addEventListener("DOMContentLoaded", () => {
     fetch("navbar.html")
       .then((res) => res.text())
@@ -126,13 +138,11 @@
         alert("error");
       });
   }
-  const modalBOdy=document.getElementById("modal-body");
 
   function geUserDetails(data) {
     if (data.length > 0) {
-        modalBOdy.innerHTML=""
+      modalBody.innerHTML = "";
       data.forEach((item) => {
-        
         var div = document.createElement("div");
         var label = document.createElement("label");
         label.className = "btn btn-outline-primary";
@@ -145,86 +155,121 @@
         checkbox.value = item.id;
         div.className = "mt-1 ";
         div.append(checkbox, label);
-        modalBOdy.append(div)
-        
+        modalBody.append(div);
       });
     }
   }
-  const btnGroup=document.getElementById("btnGroup");
-  btnGroup.addEventListener("click",handleMember)
 
-  function handleMember(){
-    let checkBoxData=[]
-    const checkBox=document.querySelectorAll("input[type=checkbox]")
-    checkBox.forEach((item)=>{
-        if(item.checked){
-            checkBoxData.push(item.id)
-        }
-    })
-    let data={
-        member:checkBoxData
-    }
-    axios.post(`/group/groupMember/${groupId}`,data,{
-        headers:{
-            "Authorization":`Bearer ${token}`
-        }
-    }).then((res)=>{
-        alert(res.data)
-    }).catch((err)=>{
-        console.log(err)
-    })
-    
-    
-  }
-  getGroupMember()
-  const listOfMember =document.getElementById("listOfMember")
-  function getGroupMember(){
-     axios.get(`/group/getGroupMember/${groupId}`,{
-      headers:{
-        "Authorization":`Bearer ${token}`
+  btnGroup.addEventListener("click", handleMember);
+
+  function handleMember() {
+    let checkBoxData = [];
+    const checkBox = document.querySelectorAll("input[type=checkbox]");
+    checkBox.forEach((item) => {
+      if (item.checked) {
+        checkBoxData.push(item.id);
       }
-     }).then((res)=>{
-       if(res.data.length>0){
-          res.data.forEach((item)=>{
-            const p=document.createElement("button");
-            p.innerHTML=item.name
-            p.className=" btn  btn-success mx-1 "
-            listOfMember.append(p)
-
-          })
-       }
-     }).catch((err)=>{
-      console.log(err)
-     })
-  }
-  const messageBtn=document.getElementById("messageBtn")
-  messageBtn.addEventListener("click",handleMessage)
-  function handleMessage(){
-    let data={
-      message:document.getElementById("message").value
-    }
-    axios.post(`/group/groupMessage/${groupId}`,data,{
-      headers:{
-        "Authorization":`Bearer ${token}`
-      }
-    }).then((res)=>{
-      console.log(res.data)
-    }).catch((err)=>{
-      console.log(err.response)
-    })
-  }
-  getHandleMessage()
-  function getHandleMessage(){
-    axios.get(`/group/getGroupMessage/${groupId}`,{
-       headers: {
-         "Authorization":`Bearer ${token}`
-       }
-    }).then((res)=>{
-      console.log(res.data)
-    }).catch((err)=>{
-      console.log(err)
-    })
-
+    });
+    let data = {
+      member: checkBoxData,
+    };
+    axios
+      .post(`/group/groupMember/${groupId}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        alert(res.data);
+        getGroupMember();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
+  getGroupMember();
+
+  function getGroupMember() {
+    axios
+      .get(`/group/getGroupMember/${groupId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.length > 0) {
+          res.data.forEach((item) => {
+            const p = document.createElement("button");
+            p.innerHTML = item.name;
+            p.className = " btn  btn-success mx-1 ";
+            listOfMember.append(p);
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  messageBtn.addEventListener("click", handleMessage);
+
+  function handleMessage() {
+    let data = {
+      message: document.getElementById("message").value,
+    };
+    axios
+      .post(`/group/groupMessage/${groupId}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        getHandleMessage();
+        document.getElementById("message").value = "";
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  }
+
+  getHandleMessage();
+
+  function getHandleMessage() {
+    axios
+      .get(`/group/getGroupMessage/${groupId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        // getData(res.data);
+        socket.emit("group-send-message",res.data)
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  socket.on("group-received-message",(data)=>{
+    getData(data)
+  })
+
+  function getData(messages) {
+    messageBox.innerHTML = "";
+    messages.forEach((message) => {
+      const div = document.createElement("div");
+      const username = document.createElement("h5");
+      const content = document.createElement("p");
+      username.textContent = message?.User?.name || "Unknown";
+      content.textContent = message?.message || "Empty";
+      div.className = "d-flex flex-column px-1 bg-white mt-1 rounded-3";
+      div.style.height = "70px";
+      div.style.width = "300px";
+      div.appendChild(username);
+      div.appendChild(content);
+      messageBox.appendChild(div);
+    });
+  }
 </script>

@@ -15,6 +15,9 @@ io.on("connection", (socket)=>{
     
      
   })
+  socket.on("group-send-message",(data)=>{
+      socket.emit("group-received-message",data)
+  })
   
 })
 
@@ -30,10 +33,13 @@ userSchema.hasMany(Group, {
 Group.belongsTo(userSchema, {
   foreignKey: "AdminId",
 });
-Group.belongsToMany(userSchema, { through: GroupUser });
-userSchema.belongsToMany(Group, { through: GroupUser });
-Group.belongsToMany(userSchema, { through: GroupMessage });
-userSchema.belongsToMany(Group, { through: GroupMessage });
+// Group.belongsToMany(userSchema, { through: GroupUser });
+// userSchema.belongsToMany(Group, { through: GroupUser });
+GroupUser.belongsTo(userSchema)
+GroupUser.belongsTo(Group)
+
+GroupMessage.belongsTo(userSchema)
+GroupMessage.belongsTo(Group)
 
 db.sync()
   .then((res) => {

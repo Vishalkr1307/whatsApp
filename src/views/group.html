@@ -43,6 +43,11 @@
 
 <script type="module">
   import { navBar } from "./navbar.js";
+  const groupForm = document.getElementById("groupForm");
+  const token = localStorage.getItem("token");
+  const groupData = document.getElementById("groupData");
+
+
   document.addEventListener("DOMContentLoaded", () => {
     fetch("navbar.html")
       .then((res) => res.text())
@@ -52,8 +57,6 @@
       });
       getGroup();
   });
-  const groupForm = document.getElementById("groupForm");
-  const token = localStorage.getItem("token");
   groupForm.addEventListener("submit", handleGroup);
 
   function handleGroup(event) {
@@ -61,7 +64,11 @@
     let data = {
       groupName: document.getElementById("group").value,
     };
-    axios
+    if(data.groupName==""){
+      alert("Please enter a group name")
+    }
+    else{
+      axios
       .post("/group/addGroup", data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -76,9 +83,9 @@
       .catch((err) => {
         console.log(err.response.data);
       });
+    }
   }
-  
-  const groupData = document.getElementById("groupData");
+  getGroup()
   function getGroup() {
     axios
       .get("/group/getGroup", {
@@ -87,26 +94,37 @@
         },
       })
       .then((res) => {
+        
         getGroupName(res.data);
       })
-      .catch((err) => console.log(err.response.data));
+      .catch((err) =>{
+        let h3=document.createElement("h3");
+        h3.innerHTML=err.response.data
+        h3.className="text-bg-danger "
+        groupData.appendChild(h3);
+
+
+      });
   }
 
   function getGroupName(data) {
     groupData.innerHTML = "";
     if (data.length > 0) {
       data.forEach((item) => {
+        // console.log(item)
+        
         const div=document.createElement("div");
         let btn = document.createElement("button");
-        btn.className = "btn btn-success w-25 mb-3 rounded-2 px-2 ";
-        btn.textContent = item.groupName;
+        btn.className = item.AdminId!=null?"btn btn-danger  w-25 mb-3 rounded-2 px-2 ":"btn btn-success w-25 mb-3 rounded-2 px-2 ";
+        btn.textContent = item.groupName==null ? item.Group.groupName : item.groupName;
         div.className="d-flex "
         div.append(btn);
         btn.addEventListener("click",()=>{
-            window.location.href=`groupMessage.html?groupId=${item.id}`
+            window.location.href=`groupMessage.html?groupId=${item.GroupId||item.id}`
         });
         groupData.append(div)
       });
     }
+    
   }
 </script>
